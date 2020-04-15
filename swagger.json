@@ -1,1255 +1,1299 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "description": "This API specification contains information around the Feedback 360 Survey\nAPI developed by the App Dev Practice.\n\nThe Feedback 360 Survey API enables the management of feedback surveys for\ncustomer engagements. A feedback survey is N/A to 5 point scale of compentency around \nthe technologies used for a project. Each added employee will be able to enhance the\nsurvey by adding technologies, softskills, and freetext for each of his or her \ncollegues. The will enable Red Hat to better understand multiple aspects of \na consutant's skillset. \n",
-    "version": "2.0.0",
-    "title": "Feedback 360 Survey API",
-    "contact": {
-      "email": "appdevpractice@redhat.com"
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Feedback 360 Survey API",
+        "version": "2.0.0",
+        "description": "This API specification contains information around the Feedback 360 Survey\nAPI developed by the App Dev Practice.\n\nThe Feedback 360 Survey API enables the management of feedback surveys for\ncustomer engagements. A feedback survey is N/A to 5 point scale of compentency around \nthe technologies used for a project. Each added employee will be able to enhance the\nsurvey by adding technologies, softskills, and freetext for each of his or her \ncollegues. The will enable Red Hat to better understand multiple aspects of \na consutant's skillset. \n",
+        "contact": {
+            "email": "appdevpractice@redhat.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
     },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    "paths": {
+        "/surveygroups": {
+            "get": {
+                "tags": [
+                    "surveyGroup"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveyGroupList"
+                                }
+                            }
+                        },
+                        "description": "A list of survey groups is returned."
+                    }
+                },
+                "operationId": "getAllSurveyGroups",
+                "summary": "Get all survey groups from Feedback 360 Survey API.",
+                "description": "Get all survey groups in Feedback 360 Survey API.\n"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "A new survey group resource contained in the request body.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewSurveyGroup"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "surveyGroup"
+                ],
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "http://api.server.com/projects/f9238beb-9649-4983-9059-4f0ee372d56e",
+                                "description": "The URI of the survey group resource that was just created."
+                            }
+                        },
+                        "description": "The survey group was successfully created. The location of the new survey group resource is in the location header of the response."
+                    },
+                    "400": {
+                        "description": "The survey group contained in the request body is invalid."
+                    },
+                    "401": {
+                        "description": "The survey group cannot be created because the user has not been authorized."
+                    },
+                    "409": {
+                        "description": "The survey group matching the details already exists."
+                    }
+                },
+                "operationId": "createSurveyGroup",
+                "summary": "Create a new survey group in the Feedback 360 Survey API.",
+                "description": "A survey group is the starting point for creating a Feedback 360 Survey. A survey group contains the project information, list of employees on the project that will recieve the survey, and a list of technologies used on the project.\n"
+            }
+        },
+        "/surveygroups/{surveyGroupId}": {
+            "get": {
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveyGroup"
+                                }
+                            }
+                        },
+                        "description": "A representation of the survey group matching the given surveyGroupID."
+                    },
+                    "404": {
+                        "description": "A survey group matching the given surveyGroupId was not found."
+                    },
+                    "401": {
+                        "description": "The Survey Group matching the given surveyGroupId has been disabled.  Please contact the Project Manager for more informaiton\""
+                    },
+                    "400": {
+                        "description": "This surveygroup was not found."
+                    }
+                },
+                "operationId": "getSurveyGroupById",
+                "summary": "Find a survey group resource by ID",
+                "description": "Returns a single survey group matching the given ID."
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewSurveyGroup"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The survey group represented by the supplied GUID has been updated with the contents of this request."
+                    },
+                    "400": {
+                        "description": "The survey group was not updated. Something is wrong with the request like a missing required field."
+                    }
+                },
+                "operationId": "updateSurveyGroupByID",
+                "summary": "Update a Survey Group in Feedback 360 Survey API.\n",
+                "description": "This representation of the survey group contained in this request will replace  the survey group located at this URI. This operation is idempotent.\n"
+            },
+            "delete": {
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The survey group represented by the supplied GUID is deleted from the system."
+                    }
+                },
+                "operationId": "deleteSurveyGroupByID",
+                "summary": "Disable a survey group from Feedback 360 Survey API.",
+                "description": "This operation will delete an entire survey group and all child resources  associated with it. This operation is idempotent. \n"
+            }
+        },
+        "/surveygroups/{surveyGroupId}/employees": {
+            "get": {
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeList"
+                                }
+                            }
+                        },
+                        "description": "A list of employee resources assigned to the specified survey group."
+                    },
+                    "404": {
+                        "description": "A survey group matching the given projectId was not found."
+                    }
+                },
+                "operationId": "getSurveyGroupEmployees",
+                "summary": "Get all employees assigned to a survey group."
+            }
+        },
+        "/surveygroups/{surveyGroupId}/submissions": {
+            "get": {
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveySubmissionList"
+                                }
+                            }
+                        },
+                        "description": "A list of the feedback submission resources for a survey group. An empty list is valid if the survey group does not have any submissions."
+                    },
+                    "404": {
+                        "description": "The survey group given by the surveyGroupId does not exist."
+                    }
+                },
+                "operationId": "getSurveyGroupSubmissions",
+                "summary": "Find all submissions associated to a survey group.",
+                "description": "A submission contains all the ratings for the skills for a targeted employee. \nThis operation will return all submissions submitted for a survey group. An empty\nresource collection is a valid response and indicates no feedback has been\nsubmitted.\n"
+            }
+        },
+        "/surveygroups/{surveyGroupId}/defaultSkill": {
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "Id of the Skill",
+                                    "type": "string",
+                                    "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The survey group represented by the supplied GUID has been updated with the contents of this request."
+                    },
+                    "400": {
+                        "description": "The survey group was not updated. Something is wrong with the request like a missing required field."
+                    }
+                },
+                "operationId": "updateDefaultSkills",
+                "summary": "Update the default skills for a survey group.\n",
+                "description": "When a default skill is added to a survey group all survey submissions created for the survey group will include the default skill.\n"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "An array of skillIds contained in the request body.",
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "description": "Id of the Skill",
+                                    "type": "string",
+                                    "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "http://api.server.com/projects/f9238beb-9649-4983-9059-4f0ee372d56e",
+                                "description": "The URI of the survey group resource that was just created for."
+                            }
+                        },
+                        "description": "The Default Skills were successfully created."
+                    },
+                    "400": {
+                        "description": "The Skills or Survey Group contained in the request body are invalid."
+                    },
+                    "401": {
+                        "description": "The Skills or Survey Group cannot be created because the user have not been authorized."
+                    },
+                    "409": {
+                        "description": "The Skills and Survey Group matching the details already exist."
+                    }
+                },
+                "operationId": "addDefaultSkill",
+                "summary": "Add a default skill to a survey group.",
+                "description": "When a default skill is added to a survey group all survey submissions created for the survey group will include the default skill.\n"
+            }
+        },
+        "/surveygroups/{surveyGroupId}/defaultSkill/{defaultSkillId}": {
+            "delete": {
+                "tags": [
+                    "surveyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "defaultSkillId",
+                        "description": "ID of the Default Skill as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238bea-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The Default Skill has been removed from the survey group."
+                    }
+                },
+                "operationId": "deleteDefaultSkill",
+                "summary": "Delete default skills for a Survey Group.",
+                "description": "This operation will delete the given default skill from the survey group. \n"
+            }
+        },
+        "/employee": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeList"
+                                }
+                            }
+                        },
+                        "description": "A list resource collection of Employees."
+                    }
+                },
+                "operationId": "getEmployees",
+                "summary": "List all employees available in the Feedback 360 Survey API.",
+                "description": "This operation fetches a full list of employees available in the Feedback 360 Survey API.  The filtering and sorting mechanism for fetching this list is yet To Be Determined.  The Employees in the Feedback 360 Survey API data store will be populated from outside resources such as LDAP or Rover.\n"
+            }
+        },
+        "/employee/{employeeId}": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeId",
+                        "description": "ID of the employee as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Employee"
+                                }
+                            }
+                        },
+                        "description": "A representation of the employee matching the given employeeId."
+                    },
+                    "404": {
+                        "description": "An employee matching the given employeeId was not found."
+                    }
+                },
+                "operationId": "getEmployeeById",
+                "summary": "Find an Employee resource by ID",
+                "description": "Returns a single employee matching the given ID."
+            }
+        },
+        "/employee/surveyGroups/{employeeId}": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeId",
+                        "description": "ID of the employee as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveyGroupList"
+                                }
+                            }
+                        },
+                        "description": "A List of Survey Groups matching the given employeeId."
+                    },
+                    "404": {
+                        "description": "An employee matching the given employeeId was not found."
+                    }
+                },
+                "operationId": "getSurveyGroupByEmployeeId",
+                "summary": "Find an all Survery Groups an employee is part of resource by ID",
+                "description": "Returns a List of Survey Groups matching the given employee ID."
+            }
+        },
+        "/employeeAssignment/employee/{employeeId}": {
+            "get": {
+                "tags": [
+                    "employeeAssignment"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeId",
+                        "description": "ID of the employee as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeAssignmentList"
+                                }
+                            }
+                        },
+                        "description": "A List of Assignments matching the given employeeId."
+                    },
+                    "404": {
+                        "description": "An employee matching the given employeeId was not found."
+                    }
+                },
+                "operationId": "getAssignmentsByEmployeeId",
+                "summary": "Find an all employee assignments an employee is part of resource by ID",
+                "description": "Returns a List of employee assignments matching the given employee ID."
+            }
+        },
+        "/employeeAssignment/surveyGroup/{surveyGroupId}": {
+            "get": {
+                "tags": [
+                    "employeeAssignment"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the surveyGroup as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeAssignmentList"
+                                }
+                            }
+                        },
+                        "description": "A List of Assignments matching the given surveyGroupId."
+                    },
+                    "404": {
+                        "description": "An surveyGroup matching the given surveyGroupId was not found."
+                    }
+                },
+                "operationId": "getAssignmentBySurveyGroupId",
+                "summary": "Find all survey group resources associated with an employee’s ID.",
+                "description": "Returns a List of survey groups matching the given employee ID."
+            }
+        },
+        "/employeeAssignment": {
+            "post": {
+                "requestBody": {
+                    "description": "A new employee assignment resource contained in the request body.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewEmployeeAssignment"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "employeeAssignment"
+                ],
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "http://api.server.com/employeeAssignment/f9238beb-9649-4983-9059-4f0ee372d56e",
+                                "description": "The URI of the employee assignment resource that was just created."
+                            }
+                        },
+                        "description": "The employee assignment was successfully created. The location of the new employee assignment resource is in the location header of the response."
+                    },
+                    "400": {
+                        "description": "The employee assignment contained in the request body is invalid."
+                    },
+                    "401": {
+                        "description": "The employee assignment  cannot be created because the user has not been authorized."
+                    },
+                    "409": {
+                        "description": "The employee assignment matching the details already exists."
+                    }
+                },
+                "operationId": "createEmployeeAssignment",
+                "summary": "Create an EmployeeAssignment in the Feedback 360 Survey API.",
+                "description": "An EmployeeAssignment adds an employee to the a survey group.  When an employee is part of a survey Group they will be able to submit surveys form and be reviewd by other employees in that survey group.  Only Project Managers and higher will have the ability to add/remove an employee from a survey group\n"
+            }
+        },
+        "/employeeAssignment/{employeeAssignmentId}": {
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmployeeAssignment"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "employeeAssignment"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeAssignmentId",
+                        "description": "ID of the employee assignment as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The employee assignment represented by the supplied GUID has been updated with the contents of this request."
+                    },
+                    "400": {
+                        "description": "The employee assignment was not updated. Something is wrong with the request like a missing required field."
+                    }
+                },
+                "operationId": "updateEmployeeAssignmentByID",
+                "summary": "Update an employeeAssignment in Feedback 360 Survey API.\n",
+                "description": "This representation of the employee assignment contained in this request will replace  the employee assignment located at this URI. This operation is idempotent.\n"
+            },
+            "delete": {
+                "tags": [
+                    "employeeAssignment"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeAssignmentId",
+                        "description": "ID of the employee assignment as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The employee assignment represented by the supplied GUID is deleted from the system."
+                    }
+                },
+                "operationId": "deleteEmployeeAssignment",
+                "summary": "Disable an employeeAssignment from Feedback 360 Survey API.",
+                "description": "This operation will delete an employeeAssignment and all child resources  associated with it. This operation is idempotent. \n"
+            }
+        },
+        "/surveySubmission/{surveyGroupId}": {
+            "post": {
+                "tags": [
+                    "surveySubmission"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the survey group as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The survey submissions were successfully created."
+                    },
+                    "400": {
+                        "description": "The survey group contained in the request is invalid."
+                    },
+                    "401": {
+                        "description": "The survey submission cannot be created because the user has not been authorized."
+                    },
+                    "409": {
+                        "description": "The survey submissions matching the details already exists."
+                    }
+                },
+                "operationId": "createSurveySubmissions",
+                "summary": "Create a batch of SurveySubmissions for a survey group in the Feedback 360 Survey API.",
+                "description": "TODO\n"
+            }
+        },
+        "/surveySubmission/{surveySubmissionId}": {
+            "get": {
+                "tags": [
+                    "surveySubmission"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveySubmissionId",
+                        "description": "ID of the surveyGroup as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveySubmission"
+                                }
+                            }
+                        },
+                        "description": "Survey submission associated with the survey submission resource ID"
+                    },
+                    "404": {
+                        "description": "An survey submission matching the given submission ID was not found."
+                    }
+                },
+                "operationId": "getSurveySubmissionById",
+                "summary": "Fetch the survey submission associated with the survey submission resource ID",
+                "description": "Returns a survey submission matching the submission ID."
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SurveySubmission"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "surveySubmission"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveySubmissionId",
+                        "description": "ID of the employee assignment as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The survey submission assignment represented by the supplied GUID has been updated with the contents of this request."
+                    },
+                    "400": {
+                        "description": "The survey submission was not updated. Something is wrong with the request like a missing required field."
+                    }
+                },
+                "operationId": "updateSurveySubmissionByID",
+                "summary": "Update a survey Submission in Feedback 360 Survey API.\n",
+                "description": "This representation of the survey submission contained in this request will replace  the survey submission located at this URI. This operation is idempotent. TODO\n"
+            },
+            "delete": {
+                "tags": [
+                    "surveySubmission"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveySubmissionId",
+                        "description": "ID of the survey submission as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The survey submission represented by the supplied GUID is disabled."
+                    }
+                },
+                "operationId": "disableSurveySubmission",
+                "summary": "Disable a surveySubmission from Feedback 360 Survey API.",
+                "description": "This operation will disable a survey submission and all child resources  associated with it. This operation is idempotent. \n"
+            }
+        },
+        "/surveySubmission/reviewedBy/{employeeId}": {
+            "get": {
+                "tags": [
+                    "surveySubmission"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeId",
+                        "description": "ID of the surveyGroup as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveySubmission"
+                                }
+                            }
+                        },
+                        "description": "Survey submissions associated with the survey submission resource ID"
+                    },
+                    "404": {
+                        "description": "Survey submissions matching the given employee ID were not found."
+                    }
+                },
+                "operationId": "getReviwedByByEmployeeId",
+                "summary": "Fetch the survey submissions reviewed by the given employee Id.",
+                "description": "Returns all survey submissions that have been reviewed by the employee ID."
+            }
+        },
+        "/surveySubmission/reviewedOn/{employeeId}": {
+            "get": {
+                "tags": [
+                    "surveySubmission"
+                ],
+                "parameters": [
+                    {
+                        "name": "employeeId",
+                        "description": "ID of the surveyGroup as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveySubmission"
+                                }
+                            }
+                        },
+                        "description": "Survey submissions associated that the employee was reviwed on."
+                    },
+                    "404": {
+                        "description": "Survey submissions matching the given employee ID were not found."
+                    }
+                },
+                "operationId": "getReviwedOnByEmployeeId",
+                "summary": "Fetch the survey submissions that the given employee Id was reviwed on.",
+                "description": "Returns all survey submissions that the employee has been reviwed on."
+            }
+        },
+        "/surveySubmission/surveyGroup/{surveyGroupId}": {
+            "get": {
+                "tags": [
+                    "surveySubmission"
+                ],
+                "parameters": [
+                    {
+                        "name": "surveyGroupId",
+                        "description": "ID of the surveyGroup as a GUID.",
+                        "schema": {
+                            "type": "string",
+                            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SurveySubmission"
+                                }
+                            }
+                        },
+                        "description": "Survey submissions associated with the Survey Group resource ID"
+                    },
+                    "404": {
+                        "description": "Survey submissions matching the given Survey Group ID were not found."
+                    }
+                },
+                "operationId": "getSurveySubmissionsBySurveyGroupId",
+                "summary": "Fetch the survey submissions associated with the Survey Group.",
+                "description": "Returns all survey submissions that are part of the SurveyGroup."
+            }
+        },
+        "/skills": {
+            "get": {
+                "tags": [
+                    "skills"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SkillList"
+                                }
+                            }
+                        },
+                        "description": "List of Skills that are available."
+                    }
+                },
+                "operationId": "getAllSkills",
+                "summary": "Fetch all the skills available to be added on a survey submission.",
+                "description": "Returns all skills that are active in the Skills table."
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "EmployeeList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Employee"
+                }
+            },
+            "Employee": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A GUID of the employee.",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Name of the employee.",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "The email address of the employee.",
+                        "type": "string",
+                        "example": "hgranger@redhat.com"
+                    },
+                    "role": {
+                        "description": "The role of the employee. For example, consultant, PM, TSM, etc.",
+                        "type": "string",
+                        "example": "Consultant"
+                    }
+                }
+            },
+            "NewSurveyGroup": {
+                "required": [
+                    "opportunityId",
+                    "projectId",
+                    "projectName",
+                    "projectCreatorId",
+                    "tsmId"
+                ],
+                "type": "object",
+                "properties": {
+                    "opportunityId": {
+                        "description": "The ID of the Opportunity from PSA.",
+                        "type": "string",
+                        "example": "3456NAS"
+                    },
+                    "projectName": {
+                        "description": "The name of the project.",
+                        "type": "string",
+                        "example": "NASA App Modernization"
+                    },
+                    "projectCreatorId": {
+                        "description": "The email address of the creator of the project.",
+                        "type": "string",
+                        "example": "janedoe@redhat.com"
+                    },
+                    "tsmId": {
+                        "description": "The email address of the TSM in charge of the project.",
+                        "type": "integer",
+                        "example": "timmytsm@redhat.com"
+                    },
+                    "employeeAssignments": {
+                        "minimum": 0,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EmployeeAssignment"
+                        }
+                    },
+                    "defaultSkills": {
+                        "minimum": 0,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SkillList"
+                        }
+                    }
+                }
+            },
+            "SurveyGroupList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/SurveyGroup"
+                }
+            },
+            "SurveyGroup": {
+                "required": [
+                    "id",
+                    "opportunityId",
+                    "projectId",
+                    "projectName",
+                    "projectCreatorId",
+                    "tsmId"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "A GUID that uniquely identifies the project.",
+                        "type": "string",
+                        "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                    },
+                    "opportunityId": {
+                        "description": "The ID of the Opportunity from PSA.",
+                        "type": "string",
+                        "example": "3456NAS"
+                    },
+                    "projectName": {
+                        "description": "The name of the project.",
+                        "type": "string",
+                        "example": "NASA App Modernization"
+                    },
+                    "projectCreatorId": {
+                        "description": "The email address of the creator of the project.",
+                        "type": "string",
+                        "example": "janedoe@redhat.com"
+                    },
+                    "tsmId": {
+                        "description": "The email address of the TSM in charge of the project.",
+                        "type": "integer",
+                        "example": "timmytsm@redhat.com"
+                    },
+                    "description": {
+                        "description": "A textual description of the project.",
+                        "type": "string",
+                        "example": "A project for migrating several JEE applications to OpenShift."
+                    },
+                    "createdDate": {
+                        "description": "The date the project was created in the Feedback 360 Survey API in UTC.",
+                        "type": "string",
+                        "example": "2020-01-29T20:03:26Z"
+                    },
+                    "modifiedDate": {
+                        "description": "The date the project was modified in the Feedback 360 Survey API in UTC.",
+                        "type": "string",
+                        "example": "2020-02-29T20:03:26Z"
+                    },
+                    "employeeAssignments": {
+                        "minimum": 0,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/EmployeeAssignment"
+                        }
+                    },
+                    "skillsUsed": {
+                        "minimum": 0,
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SkillList"
+                        }
+                    }
+                }
+            },
+            "SurveySubmissionList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/SurveySubmission"
+                }
+            },
+            "SurveySubmission": {
+                "required": [
+                    "id",
+                    "surveyAuthorId",
+                    "targetOfSurveyId",
+                    "surveyGroupId"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A GUID that uniquely identifies a survey submitted for a project.",
+                        "type": "string",
+                        "example": "f1ad7649-eb70-4499-9c82-a63fe2c6dc71"
+                    },
+                    "surveyAuthorId": {
+                        "description": "The GUID for the employee that is answering the questions of the survey.",
+                        "type": "string",
+                        "example": "9169105a-92eb-4a40-b07c-ac58ead69ea3"
+                    },
+                    "targetOfSurveyId": {
+                        "description": "A GUID for the employee in which the survey ratings apply.",
+                        "type": "string",
+                        "example": "e3357750-1329-430b-95c1-8d773ad6ac16"
+                    },
+                    "surveyGroupId": {
+                        "description": "A GUID that uniquely identifies the project.",
+                        "type": "string",
+                        "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                    },
+                    "submissionDate": {
+                        "description": "The date the survey was submitted to the Feedback 360 Survey API in UTC.",
+                        "type": "string",
+                        "example": "2020-02-29T20:03:26Z"
+                    },
+                    "submissionStatus": {
+                        "description": "Returns a status of \"Complete\" or \"Incomplete\"",
+                        "type": "string",
+                        "example": "Complete"
+                    },
+                    "ratings": {
+                        "description": "The employee that matches the GUID targetOfSurveyId's competency rating for the skills used on the project.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SkillRating"
+                        }
+                    },
+                    "feedback": {
+                        "description": "Any feedback the author of the survey would like to include in the rating.",
+                        "type": "string",
+                        "example": "John was a pleasure to work with and extremely knowledgeable in REST."
+                    }
+                }
+            },
+            "SkillRating": {
+                "required": [
+                    "skillId"
+                ],
+                "type": "object",
+                "properties": {
+                    "skillId": {
+                        "description": "A GUID that uniquely identifies a skill.",
+                        "type": "string",
+                        "example": "d567521f-13a6-4237-936c-40bbbf388bc5"
+                    },
+                    "skill": {
+                        "description": "The name of the skill.",
+                        "type": "string",
+                        "example": "Openshift"
+                    },
+                    "rating": {
+                        "description": "The rating 0 - 5 of the skill. 0 being 'Not Applicable', 1 - not very proficient, 5 - skill mastery",
+                        "type": "integer"
+                    }
+                }
+            },
+            "SkillList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Skill"
+                }
+            },
+            "Skill": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A GUID that uniquely identifies a skill.",
+                        "type": "string",
+                        "example": "d567521f-13a6-4237-936c-40bbbf388bc5"
+                    },
+                    "skill": {
+                        "description": "The name of the skill.",
+                        "type": "string",
+                        "example": "Crucial Conversations"
+                    },
+                    "description": {
+                        "description": "A description of the skill.",
+                        "type": "string",
+                        "example": "The ability to have cruical conversations with clients."
+                    },
+                    "category": {
+                        "description": "The general category of the skill.",
+                        "type": "string",
+                        "example": "leadership"
+                    }
+                }
+            },
+            "EmployeeAssignmentList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/EmployeeAssignment"
+                }
+            },
+            "EmployeeAssignment": {
+                "required": [
+                    "employeeId",
+                    "surveyGroupId",
+                    "startDate"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "A GUID that uniquely identifies the project.",
+                        "type": "string",
+                        "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                    },
+                    "employeeId": {
+                        "description": "The Employees Id.",
+                        "type": "string",
+                        "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                    },
+                    "surveyGroupId": {
+                        "description": "The unique ID of the SurveyGroup associated with the opportunity.",
+                        "type": "string",
+                        "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                    },
+                    "startDate": {
+                        "description": "The date the employee started the project.",
+                        "type": "string",
+                        "example": "2020-01-29T20:03:26Z"
+                    },
+                    "endDate": {
+                        "description": "The employee's end date on the project.",
+                        "type": "string",
+                        "example": "2020-01-29T20:03:26Z"
+                    },
+                    "roleId": {
+                        "description": "The Consultants role on the project.",
+                        "type": "string",
+                        "example": "Consultant"
+                    }
+                }
+            },
+            "NewEmployeeAssignment": {
+                "required": [
+                    "employeeId",
+                    "surveyGroupId",
+                    "startDate"
+                ],
+                "type": "object",
+                "properties": {
+                    "employeeId": {
+                        "description": "The Employees Id.",
+                        "type": "string",
+                        "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                    },
+                    "surveyGroupId": {
+                        "description": "The unique ID of the SurveyGroup associated with the opportunity.",
+                        "type": "string",
+                        "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
+                    },
+                    "startDate": {
+                        "description": "The date the employee started the project.",
+                        "type": "string",
+                        "example": "2020-01-29T20:03:26Z"
+                    },
+                    "endDate": {
+                        "description": "The employee's end date on the project.",
+                        "type": "string",
+                        "example": "2020-01-29T20:03:26Z"
+                    },
+                    "roleId": {
+                        "description": "The Consultants role on the project.",
+                        "type": "string",
+                        "example": "Consultant"
+                    }
+                }
+            }
+        },
+        "responses": {
+            "400": {
+                "description": "Syntax is invalid for this call"
+            }
+        }
+    },
+    "externalDocs": {
+        "description": "App Dev Practive",
+        "url": "https://mojo.redhat.com/docs/DOC-1208144"
     }
-  },
-  "externalDocs": {
-    "description": "App Dev Practive",
-    "url": "https://mojo.redhat.com/docs/DOC-1208144"
-  },
-  "paths": {
-    "/surveygroups": {
-      "post": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Create a new survey group in the Feedback 360 Survey API.",
-        "description": "A survey group is the starting point for creating a Feedback 360 Survey. A survey group contains the project information, list of employees on the project that will recieve the survey, and a list of technologies used on the project.\n",
-        "operationId": "createSurveyGroup",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewSurveyGroup"
-              }
-            }
-          },
-          "description": "A new survey group resource contained in the request body.",
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "The survey group was successfully created. The location of the new survey group resource is in the location header of the response.",
-            "headers": {
-              "location": {
-                "schema": {
-                  "type": "string"
-                },
-                "description": "The URI of the survey group resource that was just created.",
-                "example": "http://api.server.com/projects/f9238beb-9649-4983-9059-4f0ee372d56e"
-              }
-            }
-          },
-          "400": {
-            "description": "The survey group contained in the request body is invalid."
-          },
-          "401": {
-            "description": "The survey group cannot be created because the user has not been authorized."
-          },
-          "409": {
-            "description": "The survey group matching the details already exists."
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Get all survey groups from Feedback 360 Survey API.",
-        "description": "Get all survey groups in Feedback 360 Survey API.\n",
-        "operationId": "getAllSurveyGroups",
-        "responses": {
-          "200": {
-            "description": "A list of survey groups is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SurveyGroupList"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/surveygroups/{surveyGroupId}": {
-      "get": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Find a survey group resource by ID",
-        "description": "Returns a single survey group matching the given ID.",
-        "operationId": "getSurveyGroupById",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A representation of the survey group matching the given surveyGroupID.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SurveyGroup"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "A survey group matching the given surveyGroupId was not found."
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Disable a survey group from Feedback 360 Survey API.",
-        "description": "This operation will delete an entire survey group and all child resources  associated with it. This operation is idempotent. \n",
-        "operationId": "deleteSurveyGroupByID",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "The survey group represented by the supplied GUID is deleted from the system."
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Update a survey in Feedback 360 Survey API.\n",
-        "description": "This representation of the survey group contained in this request will replace  the survey group located at this URI. This operation is idempotent.\n",
-        "operationId": "updateSurveyGroupByID",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewSurveyGroup"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The survey group represented by the supplied GUID has been updated with the contents of this request."
-          },
-          "400": {
-            "description": "The survey group was not updated. Something is wrong with the request like a missing required field."
-          }
-        }
-      }
-    },
-    "/surveygroups/{surveyGroupId}/employees": {
-      "get": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Get all employees assigned to a survey group.",
-        "operationId": "getSurveyGroupEmployees",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of employee resources assigned to the specified survey group.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeList"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "A survey group matching the given projectId was not found."
-          }
-        }
-      }
-    },
-    "/surveygroups/{surveyGroupId}/submissions": {
-      "get": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Find all submissions associated to a survey group.",
-        "description": "A submission contains all the ratings for the skills for a targeted employee. \nThis operation will return all submissions submitted for a survey group. An empty\nresource collection is a valid response and indicates no feedback has been\nsubmitted.\n",
-        "operationId": "getSurveyGroupSubmissions",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of the feedback submission resources for a survey group. An empty list is valid if the survey group does not have any submissions.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SurveySubmissionList"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The survey group given by the surveyGroupId does not exist."
-          }
-        }
-      }
-    },
-    "/surveygroups/{surveyGroupId}/defaultSkill": {
-      "post": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Add a default skill to a survey group.",
-        "description": "When a default skill is added to a survey group all survey submissions created for the survey group will include the default skill.\n",
-        "operationId": "addDefaultSkill",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Skill"
-              }
-            }
-          },
-          "description": "A Skill resource contained in the request body.",
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "The Default Skill was successfully created.",
-            "headers": {
-              "location": {
-                "schema": {
-                  "type": "string"
-                },
-                "description": "The URI of the survey group resource that was just created for.",
-                "example": "http://api.server.com/projects/f9238beb-9649-4983-9059-4f0ee372d56e"
-              }
-            }
-          },
-          "400": {
-            "description": "The Skill or Survey Group contained in the request body is invalid."
-          },
-          "401": {
-            "description": "The Skill or Survey Group cannot be created because the user has not been authorized."
-          },
-          "409": {
-            "description": "The Skill and Survey Group matching the details already exists."
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Update the default skills for a survey group.\n",
-        "description": "When a default skill is added to a survey group all survey submissions created for the survey group will include the default skill.\n",
-        "operationId": "updateDefaultSkills",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Skill"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The survey group represented by the supplied GUID has been updated with the contents of this request."
-          },
-          "400": {
-            "description": "The survey group was not updated. Something is wrong with the request like a missing required field."
-          }
-        }
-      }
-    },
-    "/surveygroups/{surveyGroupId}/defaultSkill/{defaultSkillId}": {
-      "delete": {
-        "tags": [
-          "surveyGroup"
-        ],
-        "summary": "Delete default skills for a Survey Group.",
-        "description": "This operation will delete the given default skill from the survey group. \n",
-        "operationId": "deleteDefaultSkill",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          },
-          {
-            "name": "defaultSkillId",
-            "in": "path",
-            "description": "ID of the Default Skill as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238bea-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "The Default Skill has been removed from the survey group."
-          }
-        }
-      }
-    },
-    "/employee": {
-      "get": {
-        "tags": [
-          "employee"
-        ],
-        "summary": "List all employees available in the Feedback 360 Survey API.",
-        "description": "This operation fetches a full list of employees available in the Feedback 360 Survey API.  The filtering and sorting mechanism for fetching this list is yet To Be Determined.  The Employees in the Feedback 360 Survey API data store will be populated from outside resources such as LDAP or Rover.\n",
-        "operationId": "getEmployees",
-        "responses": {
-          "200": {
-            "description": "A list resource collection of Employees.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeList"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/employee/{employeeId}": {
-      "get": {
-        "tags": [
-          "employee"
-        ],
-        "summary": "Find an Employee resource by ID",
-        "description": "Returns a single employee matching the given ID.",
-        "operationId": "getEmployeeById",
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "description": "ID of the employee as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A representation of the employee matching the given employeeId.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Employee"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "An employee matching the given employeeId was not found."
-          }
-        }
-      }
-    },
-    "/employee/surveyGroups/{employeeId}": {
-      "get": {
-        "tags": [
-          "employee"
-        ],
-        "summary": "Find an all Survery Groups an employee is part of resource by ID",
-        "description": "Returns a List of Survey Groups matching the given employee ID.",
-        "operationId": "getSurveyGroupByEmployeeId",
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "description": "ID of the employee as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A List of Survey Groups matching the given employeeId.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SurveyGroupList"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "An employee matching the given employeeId was not found."
-          }
-        }
-      }
-    },
-    "/employeeAssignment/employee/{employeeId}": {
-      "get": {
-        "tags": [
-          "employeeAssignment"
-        ],
-        "summary": "Find an all employee assignemtns an employee is part of resource by ID",
-        "description": "Returns a List of employee assignments matching the given employee ID.",
-        "operationId": "getAssignmentsByEmployeeId",
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "description": "ID of the employee as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A List of Assignments matching the given employeeId.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeAssignmentList"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "An employee matching the given employeeId was not found."
-          }
-        }
-      }
-    },
-    "/employeeAssignment/surveyGroup/{surveyGroupId}": {
-      "get": {
-        "tags": [
-          "employeeAssignment"
-        ],
-        "summary": "Find an all employee assignemtns associated with a survery group resource by ID",
-        "description": "Returns a List of survey groups matching the given employee ID.",
-        "operationId": "getAssignmentsBySurveyGroupId",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the surveyGroup as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A List of Assignments matching the given surveyGroupId.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmployeeAssignmentList"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "An surveyGroup matching the given surveyGroupId was not found."
-          }
-        }
-      }
-    },
-    "/employeeAssignment": {
-      "post": {
-        "tags": [
-          "employeeAssignment"
-        ],
-        "summary": "Create an EmployeeAssignment in the Feedback 360 Survey API.",
-        "description": "An EmployeeAssignment adds an employee to the a survey group.  When an employee is part of a survey Group they will be able to submit surveys form and be reviewd by other employees in that survey group.  Only Project Managers and higher will have the ability to add/remove an employee from a survey group\n",
-        "operationId": "createEmployeeAssignment",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmployeeAssignment"
-              }
-            }
-          },
-          "description": "A new employee assignment resource contained in the request body.",
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "The employee assignment was successfully created. The location of the new employee assignment resource is in the location header of the response.",
-            "headers": {
-              "location": {
-                "schema": {
-                  "type": "string"
-                },
-                "description": "The URI of the employee assignment resource that was just created.",
-                "example": "http://api.server.com/employeeAssignment/f9238beb-9649-4983-9059-4f0ee372d56e"
-              }
-            }
-          },
-          "400": {
-            "description": "The employee assignment contained in the request body is invalid."
-          },
-          "401": {
-            "description": "The employee assignment  cannot be created because the user has not been authorized."
-          },
-          "409": {
-            "description": "The employee assignment matching the details already exists."
-          }
-        }
-      }
-    },
-    "/employeeAssignment/{employeeAssignmentId}": {
-      "delete": {
-        "tags": [
-          "employeeAssignment"
-        ],
-        "summary": "Disable an employeeAssignment from Feedback 360 Survey API.",
-        "description": "This operation will delete an employeeAssignment and all child resources  associated with it. This operation is idempotent. \n",
-        "operationId": "deleteEmployeeAssignment",
-        "parameters": [
-          {
-            "name": "employeeAssignmentId",
-            "in": "path",
-            "description": "ID of the employee assignment as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "The employee assignment represented by the supplied GUID is deleted from the system."
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "employeeAssignment"
-        ],
-        "summary": "Update an employeeAssignment in Feedback 360 Survey API.\n",
-        "description": "This representation of the employee assignment contained in this request will replace  the employee assignment located at this URI. This operation is idempotent.\n",
-        "operationId": "updateEmployeeAssignmentByID",
-        "parameters": [
-          {
-            "name": "employeeAssignmentId",
-            "in": "path",
-            "description": "ID of the employee assignment as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmployeeAssignment"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The employee assignment represented by the supplied GUID has been updated with the contents of this request."
-          },
-          "400": {
-            "description": "The employee assignment was not updated. Something is wrong with the request like a missing required field."
-          }
-        }
-      }
-    },
-    "/surveySubmission/{surveyGroupId}": {
-      "post": {
-        "tags": [
-          "surveySubmission"
-        ],
-        "summary": "Create a batch of SurveySubmissions for a survey group in the Feedback 360 Survey API.",
-        "description": "TODO\n",
-        "operationId": "createSurveySubmissions",
-        "parameters": [
-          {
-            "name": "surveyGroupId",
-            "in": "path",
-            "description": "ID of the survey group as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "The survey submissions were successfully created. The location of the new survey submission resources are in the location header of the response.",
-            "headers": {
-              "location": {
-                "schema": {
-                  "type": "string"
-                },
-                "description": "The URI of the survey submission resource that was just created.",
-                "example": "http://api.server.com/survey submission/f9238beb-9649-4983-9059-4f0ee372d56e"
-              }
-            }
-          },
-          "400": {
-            "description": "The survey group contained in the request is invalid."
-          },
-          "401": {
-            "description": "The survey submission cannot be created because the user has not been authorized."
-          },
-          "409": {
-            "description": "The survey submissions matching the details already exists."
-          }
-        }
-      }
-    },
-    "/surveySubmission/{surveySubmissionId}": {
-      "delete": {
-        "tags": [
-          "surveySubmission"
-        ],
-        "summary": "Disable a surveySubmission from Feedback 360 Survey API.",
-        "description": "This operation will disable a survey submission and all child resources  associated with it. This operation is idempotent. \n",
-        "operationId": "disableSurveySubmission",
-        "parameters": [
-          {
-            "name": "surveySubmissionId",
-            "in": "path",
-            "description": "ID of the survey submission as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "The survey submission represented by the supplied GUID is disabled."
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "surveySubmission"
-        ],
-        "summary": "Update a survey Submission in Feedback 360 Survey API.\n",
-        "description": "This representation of the survey submission contained in this request will replace  the survey submission located at this URI. This operation is idempotent. TODO\n",
-        "operationId": "updateSurveySubmissionByID",
-        "parameters": [
-          {
-            "name": "surveySubmissionId",
-            "in": "path",
-            "description": "ID of the employee assignment as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SurveySubmission"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The survey submission assignment represented by the supplied GUID has been updated with the contents of this request."
-          },
-          "400": {
-            "description": "The survey submission was not updated. Something is wrong with the request like a missing required field."
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "surveySubmission"
-        ],
-        "summary": "Fetch the survey submission associated with the survey submission resource ID",
-        "description": "Returns a survey submission matching the submission ID.",
-        "operationId": "getSurveySubmissionById",
-        "parameters": [
-          {
-            "name": "surveySubmissionId",
-            "in": "path",
-            "description": "ID of the surveyGroup as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Survey submission associated with the survey submission resource ID",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SurveySubmission"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "An survey submission matching the given submission ID was not found."
-          }
-        }
-      }
-    },
-    "/surveySubmission/status/{surveySubmissionId}": {
-      "get": {
-        "tags": [
-          "surveySubmission"
-        ],
-        "summary": "Fetch the survey submission status associated with the survey submission resource ID",
-        "description": "Returns a survey submission status matching the submission ID.",
-        "operationId": "getSurveySubmissionStatusById",
-        "parameters": [
-          {
-            "name": "surveySubmissionId",
-            "in": "path",
-            "description": "ID of the surveyGroup as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Survey submission status associated with the survey submission resource ID",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string",
-                  "example": "Complete"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "An survey submission status matching the given submission ID was not found."
-          }
-        }
-      }
-    },
-    "/surveySubmission/reviewedBy/{employeeId}": {
-      "get": {
-        "tags": [
-          "surveySubmission"
-        ],
-        "summary": "Fetch the survey submissions reviewed by the given employee Id.",
-        "description": "Returns all survey submissions that have been reviewed by the employee ID.",
-        "operationId": "getReviwedByByEmployeeId",
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "description": "ID of the surveyGroup as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Survey submissions associated with the survey submission resource ID",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SurveySubmission"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Survey submissions matching the given employee ID were not found."
-          }
-        }
-      }
-    },
-    "/surveySubmission/reviewedOn/{employeeId}": {
-      "get": {
-        "tags": [
-          "surveySubmission"
-        ],
-        "summary": "Fetch the survey submissions that the given employee Id was reviwed on.",
-        "description": "Returns all survey submissions that the employee has been reviwed on.",
-        "operationId": "getReviwedOnByEmployeeId",
-        "parameters": [
-          {
-            "name": "employeeId",
-            "in": "path",
-            "description": "ID of the surveyGroup as a GUID.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Survey submissions associated that the employee was reviwed on.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SurveySubmission"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Survey submissions matching the given employee ID were not found."
-          }
-        }
-      }
-    },
-    "/skills": {
-      "get": {
-        "tags": [
-          "skills"
-        ],
-        "summary": "Fetch all the skills available to be added on a survey submission.",
-        "description": "Returns all skills that are active in the Skills table.",
-        "operationId": "getAllSkills",
-        "responses": {
-          "200": {
-            "description": "List of Skills that are available.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SkillList"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "EmployeeList": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Employee"
-        }
-      },
-      "Employee": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "A GUID of the employee."
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the employee."
-          },
-          "email": {
-            "type": "string",
-            "description": "The email address of the employee.",
-            "example": "hgranger@redhat.com"
-          },
-          "role": {
-            "type": "string",
-            "description": "The role of the employee. For example, consultant, PM, TSM, etc.",
-            "example": "Consultant"
-          }
-        }
-      },
-      "NewSurveyGroup": {
-        "type": "object",
-        "required": [
-          "opportunityId",
-          "projectId",
-          "projectName",
-          "projectCreatorId",
-          "tsmId"
-        ],
-        "properties": {
-          "opportunityId": {
-            "type": "string",
-            "description": "The ID of the Opportunity from PSA.",
-            "example": "3456NAS"
-          },
-          "projectId": {
-            "type": "string",
-            "description": "The unique ID of the project associated with the opportunity.",
-            "example": "43966"
-          },
-          "projectName": {
-            "type": "string",
-            "description": "The name of the project.",
-            "example": "NASA App Modernization"
-          },
-          "projectCreatorId": {
-            "type": "string",
-            "description": "The email address of the creator of the project.",
-            "example": "janedoe@redhat.com"
-          },
-          "tsmId": {
-            "type": "integer",
-            "description": "The email address of the TSM in charge of the project.",
-            "example": "timmytsm@redhat.com"
-          },
-          "employees": {
-            "type": "array",
-            "minimum": 0,
-            "items": {
-              "$ref": "#/components/schemas/Employee"
-            }
-          },
-          "defaultSkills": {
-            "type": "array",
-            "minimum": 0,
-            "items": {
-              "$ref": "#/components/schemas/SkillList"
-            }
-          }
-        }
-      },
-      "SurveyGroupList": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/SurveyGroup"
-        }
-      },
-      "SurveyGroup": {
-        "type": "object",
-        "required": [
-          "id",
-          "opportunityId",
-          "projectId",
-          "projectName",
-          "projectCreatorId",
-          "tsmId"
-        ],
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "A GUID that uniquely identifies the project.",
-            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-          },
-          "opportunityId": {
-            "type": "string",
-            "description": "The ID of the Opportunity from PSA.",
-            "example": "3456NAS"
-          },
-          "projectId": {
-            "type": "string",
-            "description": "The unique ID of the project associated with the opportunity.",
-            "example": "43966"
-          },
-          "projectName": {
-            "type": "string",
-            "description": "The name of the project.",
-            "example": "NASA App Modernization"
-          },
-          "projectCreatorId": {
-            "type": "string",
-            "description": "The email address of the creator of the project.",
-            "example": "janedoe@redhat.com"
-          },
-          "tsmId": {
-            "type": "integer",
-            "description": "The email address of the TSM in charge of the project.",
-            "example": "timmytsm@redhat.com"
-          },
-          "description": {
-            "type": "string",
-            "description": "A textual description of the project.",
-            "example": "A project for migrating several JEE applications to OpenShift."
-          },
-          "createdDate": {
-            "type": "string",
-            "description": "The date the project was created in the Feedback 360 Survey API in UTC.",
-            "example": "2020-01-29T20:03:26Z"
-          },
-          "modifiedDate": {
-            "type": "string",
-            "description": "The date the project was modified in the Feedback 360 Survey API in UTC.",
-            "example": "2020-02-29T20:03:26Z"
-          },
-          "employees": {
-            "type": "array",
-            "minimum": 0,
-            "items": {
-              "$ref": "#/components/schemas/Employee"
-            }
-          },
-          "skillsUsed": {
-            "type": "array",
-            "minimum": 0,
-            "items": {
-              "$ref": "#/components/schemas/SkillList"
-            }
-          }
-        }
-      },
-      "SurveySubmissionList": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/SurveySubmission"
-        }
-      },
-      "SurveySubmission": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "A GUID that uniquely identifies a survey submitted for a project.",
-            "example": "f1ad7649-eb70-4499-9c82-a63fe2c6dc71"
-          },
-          "surveyAuthorId": {
-            "type": "string",
-            "description": "The GUID for the employee that is answering the questions of the survey.",
-            "example": "9169105a-92eb-4a40-b07c-ac58ead69ea3"
-          },
-          "targetOfSurveyId": {
-            "type": "string",
-            "description": "A GUID for the employee in which the survey ratings apply.",
-            "example": "e3357750-1329-430b-95c1-8d773ad6ac16"
-          },
-          "projectId": {
-            "type": "string",
-            "description": "A GUID that uniquely identifies the project.",
-            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-          },
-          "submissionDate": {
-            "type": "string",
-            "description": "The date the survey was submitted to the Feedback 360 Survey API in UTC.",
-            "example": "2020-02-29T20:03:26Z"
-          },
-          "ratings": {
-            "type": "array",
-            "description": "The employee that matches the GUID targetOfSurveyId's competency rating for the skills used on the project.",
-            "items": {
-              "$ref": "#/components/schemas/SkillRating"
-            }
-          },
-          "feedback": {
-            "type": "string",
-            "description": "Any feedback the author of the survey would like to include in the rating.",
-            "example": "John was a pleasure to work with and extremely knowledgeable in REST."
-          }
-        },
-        "required": [
-          "surveyAuthorId",
-          "targetOfSurveyId",
-          "projectId",
-          "ratings"
-        ]
-      },
-      "SkillRating": {
-        "type": "object",
-        "properties": {
-          "skillId": {
-            "type": "string",
-            "description": "A GUID that uniquely identifies a skill.",
-            "example": "d567521f-13a6-4237-936c-40bbbf388bc5"
-          },
-          "skill": {
-            "type": "string",
-            "description": "The name of the skill.",
-            "example": "Openshift"
-          },
-          "rating": {
-            "type": "integer",
-            "description": "The rating 0 - 5 of the skill. 0 being 'Not Applicable', 1 - not very proficient, 5 - skill mastery"
-          }
-        }
-      },
-      "SkillList": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Skill"
-        }
-      },
-      "Skill": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "A GUID that uniquely identifies a skill.",
-            "example": "d567521f-13a6-4237-936c-40bbbf388bc5"
-          },
-          "skill": {
-            "type": "string",
-            "description": "The name of the skill.",
-            "example": "Crucial Conversations"
-          },
-          "description": {
-            "type": "string",
-            "description": "A description of the skill.",
-            "example": "The ability to have cruical conversations with clients."
-          },
-          "category": {
-            "type": "string",
-            "description": "The general category of the skill.",
-            "example": "leadership"
-          }
-        }
-      },
-      "EmployeeAssignmentList": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/EmployeeAssignment"
-        }
-      },
-      "EmployeeAssignment": {
-        "type": "object",
-        "required": [
-          "employeeId",
-          "surveyGroupId",
-          "startDate"
-        ],
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "A GUID that uniquely identifies the project.",
-            "example": "f9238beb-9649-4983-9059-4f0ee372d56e"
-          },
-          "employeeId": {
-            "type": "string",
-            "description": "The ID of the Opportunity from PSA.",
-            "example": "3456NAS"
-          },
-          "surveyGroupId": {
-            "type": "string",
-            "description": "The unique ID of the project associated with the opportunity.",
-            "example": "43966"
-          },
-          "startDate": {
-            "type": "string",
-            "description": "The date the employee started the project.",
-            "example": "2020-01-29T20:03:26Z"
-          },
-          "endDate": {
-            "type": "string",
-            "description": "The date the employee started the project.",
-            "example": "2020-01-29T20:03:26Z"
-          },
-          "roleId": {
-            "type": "string",
-            "description": "The email address of the TSM in charge of the project.",
-            "example": "Consultant"
-          }
-        }
-      }
-    }
-  }
 }
